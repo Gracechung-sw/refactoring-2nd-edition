@@ -9,18 +9,15 @@ function statement(invoice, plays) {
   }).format;
 
   for (let perf of invoice.performances) {
-    const play = playFor(perf);
-
-    let thisAmount = amountFor(perf, play);
-
     volumeCredits += Math.max(perf.audience - 30, 0);
 
-    if ('comedy' === play.type) volumeCredits += Math.floor(perf.audience / 5);
+    if ('comedy' === playFor(perf).type)
+      volumeCredits += Math.floor(perf.audience / 5); //for 문 돌 대마다 누적. 누적해주는 로직을 따로 함수로 빼자!
 
-    result += `${play.name}: ${format(thisAmount / 100)} (${
+    result += `${playFor(perf).name}: ${format(amountFor(perf) / 100)} (${
       perf.audience
     }석)\n`;
-    totalAmount += thisAmount;
+    totalAmount += amountFor(perf);
   }
 
   result += `총액: ${format(totalAmount / 100)}\n`;
@@ -32,9 +29,9 @@ function playFor(aPerformance) {
   return plays[aPerformance.playID];
 }
 
-function amountFor(aPerformance, play) {
+function amountFor(aPerformance) {
   let result = 0;
-  switch (play.type) {
+  switch (playFor(aPerformance).type) {
     case 'tragedy':
       result = 40000;
       if (aPerformance.audience > 30) {
@@ -51,7 +48,7 @@ function amountFor(aPerformance, play) {
       break;
 
     default:
-      throw new Error(`알 수 없는 장르 : ${play.type}`);
+      throw new Error(`알 수 없는 장르 : ${playFor(aPerformance).type}`);
   }
   return result;
 }
