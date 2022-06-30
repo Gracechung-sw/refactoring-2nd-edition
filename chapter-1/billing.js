@@ -31,6 +31,8 @@ function playFor(aPerformance) {
 
 function amountFor(aPerformance) {
   let result = 0;
+  // TODO: 조건부 로직을 다형성으로 바꾸기
+  // 조건부 로직이 있음. -> 상속 계층을 구성해서 tragedy sub class와 comedy sub class가 각자의 구체적인 계산 로직을 정의하도록 한다.
   switch (playFor(aPerformance).type) {
     case 'tragedy':
       result = 40000;
