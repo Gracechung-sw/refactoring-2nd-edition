@@ -17,11 +17,8 @@ function printBanner() {
 }
 
 function calculateOutstanding(orders) {
-  let result = 0;
-  for (const order of orders) {
-    result += order.amount;
-  }
-  return result;
+  // NOTE: sum과 order 인자를 받아서 반복하면서 sum에 order.amount를 더해갈건데, sum의 초기값은  0이야.
+  return orders.reduce((sum, order) => (sum += order.amount), 0);
 }
 
 function recordDueDate(invoice) {
