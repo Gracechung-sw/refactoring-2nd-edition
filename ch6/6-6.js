@@ -11,6 +11,27 @@
  */
 let defaultOwner = { firstName: '마틴', lastName: '파울러' };
 
+// 방법 1. 객체를 복사해서 새로운 객체를 반환
 export function getDefaultOwner() {
-  return defaultOwner;
+  return { ...defaultOwner }; // 한 depth의 복사만 됨.
+}
+
+// 방법2. class 생성
+
+defaultOwner = new Person({ firstName: '마틴', lastName: '파울러' });
+class Person {
+  #lastName;
+  #firstName;
+  constructor(data) {
+    this.#lastName = data.lastName;
+    this.#firstName = data.firstName;
+  }
+
+  get lastName() {
+    return this.#lastName;
+  }
+
+  get firstName() {
+    return this.#firstName;
+  }
 }
