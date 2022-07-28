@@ -1,4 +1,4 @@
-import { getDefaultOwner } from './6-6.js';
+import { getDefaultOwner } from './encapsulate-variable.js';
 
 const owner = getDefaultOwner();
 owner.firstName = '엘리';
