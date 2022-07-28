@@ -1,24 +1,39 @@
 export function printOwing(invoice) {
-  let outstanding = 0;
+  printBanner();
 
+  let outstanding = calculateOutstanding(invoice.orders);
+
+  // NOTE: 리펙토링 하기 전 코드에서 업데이트, 기록의 역할이 있기 때문에 이를 이름에서도 나타내주는게 좋다.
+  // e.g., record, update
+  recordDueDate(invoice);
+
+  printDetails(invoice, outstanding);
+}
+
+function printBanner() {
   console.log('***********************');
   console.log('**** Customer Owes ****');
   console.log('***********************');
+}
 
-  // calculate outstanding
-  for (const o of invoice.orders) {
-    outstanding += o.amount;
+function calculateOutstanding(orders) {
+  let result = 0;
+  for (const order of orders) {
+    result += order.amount;
   }
+  return result;
+}
 
-  // record due date
+function recordDueDate(invoice) {
   const today = new Date();
   invoice.dueDate = new Date(
     today.getFullYear(),
     today.getMonth(),
     today.getDate() + 30
   );
+}
 
-  //print details
+function printDetails(invoice, outstanding) {
   console.log(`name: ${invoice.customer}`);
   console.log(`amount: ${outstanding}`);
   console.log(`due: ${invoice.dueDate.toLocaleDateString()}`);
