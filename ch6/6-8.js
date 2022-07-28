@@ -1,7 +1,5 @@
-export function readingsOutsideRange(station, operationPlan) {
-  return station.readings.filter(
-    (r) => r.temp < operationPlan.min || r.temp > operationPlan.max
-  );
+export function readingsOutsideRange(station, range) {
+  return station.readings.filter((r) => !range.includes(r.temp));
 }
 
 export class NumberRange {
@@ -18,6 +16,10 @@ export class NumberRange {
 
   get max() {
     return this.#max;
+  }
+
+  includes(value) {
+    return value >= this.#min && value <= this.#max;
   }
 }
 
