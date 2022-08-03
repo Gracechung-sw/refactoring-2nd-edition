@@ -1,4 +1,4 @@
-import { acquireReading } from './6-9.js';
+import { acquireReading } from './combine-functions-into-class.js';
 
 const reading = acquireReading();
 
