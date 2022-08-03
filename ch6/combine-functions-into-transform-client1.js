@@ -1,4 +1,7 @@
-import { acquireReading, enrichReading } from './6-10.js';
+import {
+  acquireReading,
+  enrichReading,
+} from './combine-functions-into-transform.js';
 
 const rawReading = acquireReading(); // 원래 데이터를 받아와서
 const reading = enrichReading(rawReading); // 원래 데이터를 확장된 객체로 변환해주는 함수로 넣어주면, 필요한 데이터가 미리 다 계산된 reading 이 반환된다.
