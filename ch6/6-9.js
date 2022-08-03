@@ -35,6 +35,10 @@ export class Reading {
     return this.#month;
   }
 
+  get year() {
+    return this.year;
+  }
+
   get baseRate() {
     if (this.year === 2017 && this.month === 5) return 0.1;
     return 0.2;
@@ -42,6 +46,14 @@ export class Reading {
 
   get baseCharge() {
     return this.baseRate * this.quantity;
+  }
+
+  get taxThreshold() {
+    return 0.1;
+  }
+
+  get taxableCharge() {
+    Math.max(0, base - this.taxThreshold);
   }
 }
 
