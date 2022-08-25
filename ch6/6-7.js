@@ -1,3 +1,6 @@
+/**
+ * Rename Variable
+ */
 let area = height * width;
 
 const companyName = '애플';

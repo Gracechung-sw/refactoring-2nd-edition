@@ -1,3 +1,6 @@
+/**
+ * Variable Extract 2
+ */
 export class Order {
   #data;
   constructor(aRecord) {

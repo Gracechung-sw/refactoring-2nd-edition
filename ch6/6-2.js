@@ -1,3 +1,6 @@
+/**
+ * Function Inline
+ */
 // 예제 1
 // Refactor Point:
 // 1. moreThanFiveLateDeliveries에 대단한 비지니스 로직이 있는게 아니고

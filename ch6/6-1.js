@@ -1,3 +1,6 @@
+/**
+ * Function extract
+ */
 export function printOwing(invoice) {
   printBanner();
 

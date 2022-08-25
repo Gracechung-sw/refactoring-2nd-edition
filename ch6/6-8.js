@@ -1,3 +1,6 @@
+/**
+ * Introduce parameter object
+ */
 export function readingsOutsideRange(station, range) {
   return station.readings.filter((r) => !range.includes(r.temp));
 }

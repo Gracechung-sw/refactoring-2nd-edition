@@ -1,3 +1,6 @@
+/**
+ * Combine functions into class
+ */
 export function acquireReading() {
   return reading;
 }

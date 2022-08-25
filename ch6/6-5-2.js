@@ -1,3 +1,6 @@
+/**
+ * Change Function Declaration 2
+ */
 export default class Book {
   #reservations;
   constructor() {
