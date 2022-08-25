@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "target": "ES5",
+    "module": "es6",
+    "outDir": "./dist",
+    "moduleResolution": "Node",
+    "noImplicitAny": true,
+    "lib": ["ES2015", "DOM", "DOM.Iterable"],
+    "types": ["jest", "node"],
+    "allowUnusedLabels": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "strictFunctionTypes": true
+  },
+  "include": ["./src/**/*", "./ch6/*"],
+  "exclude": ["node_modules", "dist"]
+}
