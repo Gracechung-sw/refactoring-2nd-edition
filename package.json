@@ -5,7 +5,8 @@
   "main": "6-1.js",
   "type": "module",
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watchAll",
+    "devtest": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watchAll",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "start": "tsc-watch --onSuccess \" node dist/6-1.js\" "
   },
   "keywords": [],
