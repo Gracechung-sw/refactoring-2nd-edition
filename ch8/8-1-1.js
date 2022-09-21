@@ -1,3 +1,10 @@
+/**
+ * 함수 옮기기(Move function) - 순수 함수 내에서의 함수 옮기기.
+ * Refactoring point
+ *  함수 내 중첩 함수들이 존재. 이걸로 모듈화 , 캡슐화 할 수 있음.
+ *  이 때 중첩함수들이 정말 trackSummary에서 사용하는 data와 밀접하게 연관이 있나? 를 봐야함.
+ *  보니까, 중첩함수에서 distance, radians 함수는 trackSummary에서 직접 쓰이지도 않고, 연관성이 떨어짐. 굳이 중첩함수로 존재해야할 이유가 없음.
+ */
 export function trackSummary(points) {
   const totalTime = calculateTime();
   const totalDistance = calculateDistance();
