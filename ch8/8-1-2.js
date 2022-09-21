@@ -31,15 +31,14 @@ export class AccountType {
 
   overdraftCharge(daysOverdrawn) {
     // Q. 인자를 받을 때는 get이 될 수 없다?
-    if (this.type.isPremium) {
-      const baseCharge = 10;
-      if (daysOverdrawn <= 7) {
-        return baseCharge;
-      } else {
-        return baseCharge + (daysOverdrawn - 7) * 0.85;
-      }
-    } else {
+    if (!this.isPremium) {
       return daysOverdrawn * 1.75;
+    }
+    const baseCharge = 10;
+    if (daysOverdrawn <= 7) {
+      return baseCharge;
+    } else {
+      return baseCharge + (daysOverdrawn - 7) * 0.85;
     }
   }
 }
