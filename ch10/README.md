@@ -7,3 +7,6 @@
 2. 조건문 통합하기 (Consolidate Conditional Expression) -> 이 둘을 통해서 조건문을 왜 이렇게 하는지, 이게 뭔지를 나타낸다.
 3. 중첩 조건문을 보호 구문으로 바꾸기 (Replace Nested Conditional with Guard Clauses)
 4. 조건부 로직을 다형성으로 바꾸기 (Replace Conditional with Polymorphism)
+5. 특이 케이스 추가하기 (Introduce Special Case)
+6. 어셔션 추가하기 (Introduce Assertion)
+7. 제어 플래그를 탈출문으로 바꾸기 (Replace Control Flag with Break)
