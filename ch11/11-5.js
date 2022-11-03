@@ -1,3 +1,7 @@
+/**
+ * 매개변수를 질의 함수로 바꾸기 (Replace Parameter with Query)
+ * Ch6와 유사.
+ */
 export class Order {
   constructor(quantity, itemPrice) {
     this.quantity = quantity;
@@ -21,3 +25,5 @@ export class Order {
     }
   }
 }
+
+// ch6 할 때는 이 질의함수로 빼기가 어려웠는데, 한 번 더 보니까 이해감! 
