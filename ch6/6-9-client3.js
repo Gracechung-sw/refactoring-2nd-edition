@@ -1,9 +1,5 @@
-import { acquireReading, baseRate } from './6-9.js';
+import { acquireReading } from './combine-functions-into-class.js';
 
-const aReading = acquireReading();
+const reading = acquireReading();
 
-function calculateBaseCharge(aReading) {
-  return baseRate(aReading.month, aReading.year) * aReading.quantity;
-}
-
-const basicChargeAmount = calculateBaseCharge(aReading);
+const basicChargeAmount = reading.baseCharge;

@@ -1,17 +1,21 @@
 /**
- * Variable Extract 2
+ * Variable Extract 2 Typescript
  */
+interface PerchasedItem {
+  quantity: number;
+  itemPrice: number;
+}
+
 export class Order {
-  #data;
-  constructor(aRecord) {
-    this.#data = aRecord;
+  constructor(private perchasedItem: PerchasedItem) {
+    this.perchasedItem = perchasedItem;
   }
 
   get quantity() {
-    return this.#data.quantity;
+    return this.perchasedItem.quantity;
   }
   get itemPrice() {
-    return this.#data.itemPrice;
+    return this.perchasedItem.itemPrice;
   }
 
   get basePrice() {

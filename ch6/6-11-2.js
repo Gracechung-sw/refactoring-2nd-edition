@@ -1,18 +1,35 @@
 import fs from 'fs';
 
-if (!process.argv[2]) {
-  throw new Error('파일 이름을 입력하세요');
+function run(args) {
+  const command = validateCommand(args);
+  countOrders(command);
 }
 
-const fileName = `./${process.argv[2]}.json`;
-if (!fs.existsSync(fileName)) {
-  throw new Error('파일이 존재하지 않습니다');
+function validateCommand(args) {
+  if (!args[2]) {
+    throw new Error('파일 이름을 입력하세요');
+  }
+
+  const fileName = `./${args[2]}.json`;
+  if (!fs.existsSync(fileName)) {
+    throw new Error('파일이 존재하지 않습니다');
+  }
+
+  const countReadOnly = args.includes('-r');
+  return {
+    fileName,
+    countReadOnly,
+  };
 }
 
-const rawData = fs.readFileSync(fileName);
-const orders = JSON.parse(rawData);
-if (process.argv.includes('-r')) {
-  console.log(orders.filter((order) => order.status === 'ready').length);
-} else {
-  console.log(orders.length);
+function countOrders(command) {
+  const rawData = fs.readFileSync(command.fileName);
+  const orders = JSON.parse(rawData);
+  if (command.countReadOnly) {
+    console.log(orders.filter((order) => order.status === 'ready').length);
+  } else {
+    console.log(orders.length);
+  }
 }
+
+run(process.argv); // run 함수를 만들어서 노드의 process dependency를 제거.
