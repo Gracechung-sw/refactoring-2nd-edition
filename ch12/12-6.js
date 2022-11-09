@@ -7,21 +7,12 @@
  */
 class Employee {
   #name;
-  #type;
-  constructor(name, type) { // 문제점 1. 11장에서 했던 내용. 외부 사용처에선 어떤 type이 있는지 모른다. type같은 flag를 사용하는 대신, type에 따라 사용할 api를 그냥 마련해놓자. 
-    // this.validateType(type); // 문제점 1 때문에 type validation이 필요해서 여기서 이렇게 해준 것 같다. 
+  constructor(name, type) {
     this.#name = name;
-    this.#type = type;
-  }
-
-  validateType(arg) {
-    if (!['engineer', 'manager', 'salesperson'].includes(arg)) {
-      throw new Error(`${arg}라는 직원 유형은 없습니다.`); // 문제점 2. 그런데 생성자에서 에러를 던지는 건 정말 나쁜 practice이고, 이를 써서 validate를 하지 않아도 되도록 애초에 코드를 짜는 것이 좋다. 
-    }
   }
 
   get type() {
-    return this.#type;
+    return 'employee';
   }
 
   toString() {
@@ -29,5 +20,17 @@ class Employee {
   }
 }
 
-const ellie = new Employee('엘리', 'engineer');
-const bob = new Employee('밥', 'manager');
+class Engineer extends Employee {
+  get type(){
+    return 'engineer'
+  }
+}
+
+class Manager extends Employee {
+  get type(){
+    return 'manager'
+  }
+}
+
+const ellie = new Engineer('엘리');
+const bob = new Manager('밥');
