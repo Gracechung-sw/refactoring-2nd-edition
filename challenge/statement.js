@@ -21,6 +21,7 @@ function createStatement(invoice, plays){
   return statement;
 
   function enrichPerformance(performance) {
+    // Refactoring point: 이렇게 변환함수를 사용하는 것 보다 class를 사용하는 것이 더 좋다. 
     const result = {...performance}
     result.play = playFor(performance)
     result.amount = amountFor(result)
