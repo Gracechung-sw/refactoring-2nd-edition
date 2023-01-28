@@ -1,7 +1,11 @@
-// Refactoring point: statement와 renderPlainText에서 같은 인자를 사용하고, statement에서도 renderPlainText를 그대로 return한다. 
-// 이럴꺼면 굳이 statement를 따로 만들 필요가 있나??
 export function statement(invoice, plays){
-  // 사용자가 input한 데이터를 가공하는 부분
+  // Refactoring point: statement라는 함수가 있는데, 어떤 흐름을 따라가면서 리턴값이 완성되는지, 한눈에 알 수 있도록 함수를 작성하고 싶다. 
+  // 그래서 함수명도 그 흐름과 역할이 잘 드러나게 지어야 한다. 
+  const statement = createStatement(invoice, plays);
+  return renderPlainText(statement);
+}
+
+function createStatement(invoice, plays){
   const statement = {};
   statement.customer = invoice.customer;
   // statement.performances = invoice.performances;
@@ -9,6 +13,8 @@ export function statement(invoice, plays){
   statement.performances = invoice.performances.map(p => enrichPerformance(p))
   statement.totalAmounts = totalAmounts(statement.performances)
   statement.totalCredits = totalCredits(statement.performances)
+  return statement;
+
   function enrichPerformance(performance) {
     const result = {...performance}
     result.play = playFor(performance)
@@ -55,7 +61,6 @@ export function statement(invoice, plays){
     return result
   }
 
-
   function totalCredits(performances){
     // Refactoring step6. 반복문 쪼개기한 후 그 쪼갠 부분을 함수로 뺄 수 있는지 확인하기.
     // let result = 0
@@ -71,8 +76,9 @@ export function statement(invoice, plays){
     return performances.reduce((sum, p) => (sum += p.amount), 0)
   }
 
-  return renderPlainText(statement)
+  
 }
+
 
 
 // Refactoring point: renderPlainText의 책임이 과연 1개인가?
