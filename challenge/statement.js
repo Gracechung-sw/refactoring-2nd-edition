@@ -5,6 +5,11 @@ export function statement(invoice, plays){
   return renderPlainText(statement);
 }
 
+export function htmlStatement(invoice, plays){
+  const statement = createStatement(invoice, plays);
+  return renderHTMLText(statement);
+}
+
 function createStatement(invoice, plays){
   const statement = {};
   statement.customer = invoice.customer;
@@ -92,6 +97,18 @@ export function renderPlainText(statement) {
 
   for (let perf of statement.performances) {
     // Refactoring step6. 매번 값에 접근하기보다 필요할 때 질의하는게 좋음. 질의함수로 뺄 수 있는지 확인한다. 
+    result += `  ${perf.play.name}: ${format(perf.amount / 100)} (${
+      perf.audience
+    }석)\n`;
+  }
+  result += `총액: ${format(statement.totalAmounts / 100)}\n`;
+  result += `적립 포인트: ${statement.totalCredits}점\n`;
+  return result;
+}
+
+export function renderHTMLText(statement) {
+  let result = `<h1>청구 내역 (고객명: ${statement.customer})\n</h1>`;
+  for (let perf of statement.performances) {
     result += `  ${perf.play.name}: ${format(perf.amount / 100)} (${
       perf.audience
     }석)\n`;
