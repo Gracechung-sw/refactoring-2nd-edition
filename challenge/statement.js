@@ -7,6 +7,8 @@ export function statement(invoice, plays){
   // statement.performances = invoice.performances;
   // Refactoring 방법 1. (책에서 소개한 방법). performances를 for loop 돌면서, 우리가 performance에서 필요한 정보들을 담고 있는 새로운 객체를 생성시킨다. 
   statement.performances = invoice.performances.map(p => enrichPerformance(p))
+  statement.totalAmounts = totalAmounts(statement.performances)
+  statement.totalCredits = totalCredits(statement.performances)
   function enrichPerformance(performance) {
     const result = {...performance}
     result.play = playFor(performance)
@@ -53,6 +55,22 @@ export function statement(invoice, plays){
     return result
   }
 
+
+  function totalCredits(performances){
+    // Refactoring step6. 반복문 쪼개기한 후 그 쪼갠 부분을 함수로 뺄 수 있는지 확인하기.
+    // let result = 0
+    // for (let perf of invoice.performances){
+    //   result += volumeCreditsFor(perf)
+    // }
+    // return result
+    // Refactoring step7. 반복문 -> 함수형 프로그래밍으로 파이프라인화 할 수 있는지 확인하기. 
+    return performances.reduce((sum, p) => (sum += p.credits), 0)
+  }
+
+  function totalAmounts(performances){
+    return performances.reduce((sum, p) => (sum += p.amount), 0)
+  }
+
   return renderPlainText(statement)
 }
 
@@ -72,30 +90,9 @@ export function renderPlainText(statement) {
       perf.audience
     }석)\n`;
   }
-  result += `총액: ${format(totalAmounts() / 100)}\n`;
-  result += `적립 포인트: ${totalCredits()}점\n`;
+  result += `총액: ${format(statement.totalAmounts / 100)}\n`;
+  result += `적립 포인트: ${statement.totalCredits}점\n`;
   return result;
-
-
-
-
-
-
-
-  function totalCredits(){
-    // Refactoring step6. 반복문 쪼개기한 후 그 쪼갠 부분을 함수로 뺄 수 있는지 확인하기.
-    // let result = 0
-    // for (let perf of invoice.performances){
-    //   result += volumeCreditsFor(perf)
-    // }
-    // return result
-    // Refactoring step7. 반복문 -> 함수형 프로그래밍으로 파이프라인화 할 수 있는지 확인하기. 
-    return statement.performances.reduce((sum, p) => (sum += p.credits), 0)
-  }
-
-  function totalAmounts(){
-    return statement.performances.reduce((sum, p) => (sum += p.amount), 0)
-  }
 }
 
 // Refactoring step2. 함수 안의 함수일 경우, 이게 꼭 함수 내에 있을 필요가 있는지 확인한다. 
