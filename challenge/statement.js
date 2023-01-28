@@ -1,7 +1,22 @@
 // Refactoring point: statement와 renderPlainText에서 같은 인자를 사용하고, statement에서도 renderPlainText를 그대로 return한다. 
 // 이럴꺼면 굳이 statement를 따로 만들 필요가 있나??
 export function statement(invoice, plays){
-  return renderPlainText(invoice, plays)
+  // 사용자가 input한 데이터를 가공하는 부분
+  const statement = {};
+  statement.customer = invoice.customer;
+  // statement.performances = invoice.performances;
+  // Refactoring 방법 1. (책에서 소개한 방법). performances를 for loop 돌면서, 우리가 performance에서 필요한 정보들을 담고 있는 새로운 객체를 생성시킨다. 
+  statement.performances = invoice.performances.map(p => enrichPerformance(p))
+  function enrichPerformance(performance) {
+    const result = {...performance}
+    result.play = playFor(performance)
+    return result;
+  }
+
+  function playFor(performance){
+    return plays[performance.playID]
+  }
+  return renderPlainText(statement)
 }
 
 
@@ -10,13 +25,13 @@ export function statement(invoice, plays){
 // 역할2. 어떻게 출력. 
 // 이렇게 책임이 2개가 같이 있다. 이 경계를 잘 나누는게 좋다.
 // 사용자가 input한 데이터를 가공하는 것과 실제 실행하는 것을 나눠야 한다. (example. 6-11-2.js)
-export function renderPlainText(invoice, plays) {
+export function renderPlainText(statement) {
   // Refactoring step1. 변수는 사용하는 곳 가까이 있는게 좋다. 즉, 해당 변수가 어디서 쓰이고 있는지 확인한다. 
-  let result = `청구 내역 (고객명: ${invoice.customer})\n`;
+  let result = `청구 내역 (고객명: ${statement.customer})\n`;
 
-  for (let perf of invoice.performances) {
+  for (let perf of statement.performances) {
     // Refactoring step6. 매번 값에 접근하기보다 필요할 때 질의하는게 좋음. 질의함수로 뺄 수 있는지 확인한다. 
-    result += `  ${playFor(perf).name}: ${format(amountFor(perf) / 100)} (${
+    result += `  ${perf.play.name}: ${format(amountFor(perf) / 100)} (${
       perf.audience
     }석)\n`;
   }
@@ -28,22 +43,20 @@ export function renderPlainText(invoice, plays) {
     // 포인트를 적립한다.
     let result = Math.max(performance.audience - 30, 0);
     // 희극 관객 5명마다 추가 포인트를 제공한다.
-    if ('comedy' === playFor(performance).type) {
+    if ('comedy' === performance.play.type) {
       result += Math.floor(performance.audience / 5)
     };
     return result
   }
 
-  function playFor(performance){
-    return plays[performance.playID]
-  }
+
 
   // Refactoring step5. 변수명이 과도하게 생략(perf :( -> performance :))되어있거나 명확하지 않은지 확인한다. 
   function amountFor(performance){
     let result = 0;
     // Refactoring step3. 독자적인 기능을 하는 함수로 뺄 수 있는지 확인한다. 즉, 함수는 하나의 기능만 하고 이 기능을 가장 잘 나타내는 함수명을 가져야 한다. 
     // Refactoring step4. 과도한 if/else나 switch는 '이건 다형성을 이용해 볼 수 있지 않을까?' 하는 생각을 해보는 것이 바람직하다. 
-    switch (playFor(performance).type) {
+    switch (performance.play.type) {
       case 'tragedy': // 비극
         result = 40000;
         if (performance.audience > 30) {
@@ -71,11 +84,11 @@ export function renderPlainText(invoice, plays) {
     // }
     // return result
     // Refactoring step7. 반복문 -> 함수형 프로그래밍으로 파이프라인화 할 수 있는지 확인하기. 
-    return invoice.performances.reduce((sum, p) => (sum += volumeCreditsFor(p)), 0)
+    return statement.performances.reduce((sum, p) => (sum += volumeCreditsFor(p)), 0)
   }
 
   function totalAmounts(){
-    return invoice.performances.reduce((sum, p) => (sum += amountFor(p)), 0)
+    return statement.performances.reduce((sum, p) => (sum += amountFor(p)), 0)
   }
 }
 
