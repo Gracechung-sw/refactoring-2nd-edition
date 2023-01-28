@@ -10,48 +10,15 @@ export function statement(invoice, plays){
   function enrichPerformance(performance) {
     const result = {...performance}
     result.play = playFor(performance)
+    result.amount = amountFor(result)
+    result.credits = volumeCreditsFor(result)
     return result;
   }
 
   function playFor(performance){
     return plays[performance.playID]
   }
-  return renderPlainText(statement)
-}
 
-
-// Refactoring point: renderPlainText의 책임이 과연 1개인가?
-// 지금은 역할 1. invoice와 plays를 받아서 전체적인 금액과 적립금을 계산하는 일 (즉, 데이터 가공)
-// 역할2. 어떻게 출력. 
-// 이렇게 책임이 2개가 같이 있다. 이 경계를 잘 나누는게 좋다.
-// 사용자가 input한 데이터를 가공하는 것과 실제 실행하는 것을 나눠야 한다. (example. 6-11-2.js)
-export function renderPlainText(statement) {
-  // Refactoring step1. 변수는 사용하는 곳 가까이 있는게 좋다. 즉, 해당 변수가 어디서 쓰이고 있는지 확인한다. 
-  let result = `청구 내역 (고객명: ${statement.customer})\n`;
-
-  for (let perf of statement.performances) {
-    // Refactoring step6. 매번 값에 접근하기보다 필요할 때 질의하는게 좋음. 질의함수로 뺄 수 있는지 확인한다. 
-    result += `  ${perf.play.name}: ${format(amountFor(perf) / 100)} (${
-      perf.audience
-    }석)\n`;
-  }
-  result += `총액: ${format(totalAmounts() / 100)}\n`;
-  result += `적립 포인트: ${totalCredits()}점\n`;
-  return result;
-
-  function volumeCreditsFor(performance){
-    // 포인트를 적립한다.
-    let result = Math.max(performance.audience - 30, 0);
-    // 희극 관객 5명마다 추가 포인트를 제공한다.
-    if ('comedy' === performance.play.type) {
-      result += Math.floor(performance.audience / 5)
-    };
-    return result
-  }
-
-
-
-  // Refactoring step5. 변수명이 과도하게 생략(perf :( -> performance :))되어있거나 명확하지 않은지 확인한다. 
   function amountFor(performance){
     let result = 0;
     // Refactoring step3. 독자적인 기능을 하는 함수로 뺄 수 있는지 확인한다. 즉, 함수는 하나의 기능만 하고 이 기능을 가장 잘 나타내는 함수명을 가져야 한다. 
@@ -71,10 +38,49 @@ export function renderPlainText(statement) {
         result += 300 * performance.audience;
         break;
       default:
-        throw new Error(`알 수 없는 장르: ${playFor(performance).type}`);
+        throw new Error(`알 수 없는 장르: ${performance.play.type}`);
     }
     return result
   }
+
+  function volumeCreditsFor(performance){
+    // 포인트를 적립한다.
+    let result = Math.max(performance.audience - 30, 0);
+    // 희극 관객 5명마다 추가 포인트를 제공한다.
+    if ('comedy' === performance.play.type) {
+      result += Math.floor(performance.audience / 5)
+    };
+    return result
+  }
+
+  return renderPlainText(statement)
+}
+
+
+// Refactoring point: renderPlainText의 책임이 과연 1개인가?
+// 지금은 역할 1. invoice와 plays를 받아서 전체적인 금액과 적립금을 계산하는 일 (즉, 데이터 가공)
+// 역할2. 어떻게 출력. 
+// 이렇게 책임이 2개가 같이 있다. 이 경계를 잘 나누는게 좋다.
+// 사용자가 input한 데이터를 가공하는 것과 실제 실행하는 것을 나눠야 한다. (example. 6-11-2.js)
+export function renderPlainText(statement) {
+  // Refactoring step1. 변수는 사용하는 곳 가까이 있는게 좋다. 즉, 해당 변수가 어디서 쓰이고 있는지 확인한다. 
+  let result = `청구 내역 (고객명: ${statement.customer})\n`;
+
+  for (let perf of statement.performances) {
+    // Refactoring step6. 매번 값에 접근하기보다 필요할 때 질의하는게 좋음. 질의함수로 뺄 수 있는지 확인한다. 
+    result += `  ${perf.play.name}: ${format(perf.amount / 100)} (${
+      perf.audience
+    }석)\n`;
+  }
+  result += `총액: ${format(totalAmounts() / 100)}\n`;
+  result += `적립 포인트: ${totalCredits()}점\n`;
+  return result;
+
+
+
+
+
+
 
   function totalCredits(){
     // Refactoring step6. 반복문 쪼개기한 후 그 쪼갠 부분을 함수로 뺄 수 있는지 확인하기.
@@ -84,11 +90,11 @@ export function renderPlainText(statement) {
     // }
     // return result
     // Refactoring step7. 반복문 -> 함수형 프로그래밍으로 파이프라인화 할 수 있는지 확인하기. 
-    return statement.performances.reduce((sum, p) => (sum += volumeCreditsFor(p)), 0)
+    return statement.performances.reduce((sum, p) => (sum += p.credits), 0)
   }
 
   function totalAmounts(){
-    return statement.performances.reduce((sum, p) => (sum += amountFor(p)), 0)
+    return statement.performances.reduce((sum, p) => (sum += p.amount), 0)
   }
 }
 
