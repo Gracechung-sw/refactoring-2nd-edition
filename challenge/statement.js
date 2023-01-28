@@ -1,8 +1,15 @@
+// Refactoring point: statement와 renderPlainText에서 같은 인자를 사용하고, statement에서도 renderPlainText를 그대로 return한다. 
+// 이럴꺼면 굳이 statement를 따로 만들 필요가 있나??
 export function statement(invoice, plays){
   return renderPlainText(invoice, plays)
 }
 
 
+// Refactoring point: renderPlainText의 책임이 과연 1개인가?
+// 지금은 역할 1. invoice와 plays를 받아서 전체적인 금액과 적립금을 계산하는 일 (즉, 데이터 가공)
+// 역할2. 어떻게 출력. 
+// 이렇게 책임이 2개가 같이 있다. 이 경계를 잘 나누는게 좋다.
+// 사용자가 input한 데이터를 가공하는 것과 실제 실행하는 것을 나눠야 한다. (example. 6-11-2.js)
 export function renderPlainText(invoice, plays) {
   // Refactoring step1. 변수는 사용하는 곳 가까이 있는게 좋다. 즉, 해당 변수가 어디서 쓰이고 있는지 확인한다. 
   let result = `청구 내역 (고객명: ${invoice.customer})\n`;
