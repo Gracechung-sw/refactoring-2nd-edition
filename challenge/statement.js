@@ -14,6 +14,18 @@ class Performance {
     return this.#audience
   }
 
+  static create(audience, play){
+    // 팩토리 함수. 
+    switch(play.type){
+      case 'tragedy':
+        return new TragedyPerformance(audience, play)
+      case 'comedy':
+        return new ComedyPerformance(audience, play)
+      default:
+        throw new Error(`알 수 없는 타입: ${play.type}`)
+    }
+  }
+
 }
 
 class TragedyPerformance extends Performance {
@@ -65,7 +77,7 @@ function createStatement(invoice, plays){
   statement.customer = invoice.customer;
   // statement.performances = invoice.performances;
   // Refactoring 방법 1. (책에서 소개한 방법). performances를 for loop 돌면서, 우리가 performance에서 필요한 정보들을 담고 있는 새로운 객체를 생성시킨다. 
-  statement.performances = invoice.performances.map(p => new Performance(p.audience, plays[p.playID]))
+  statement.performances = invoice.performances.map(p => Performance.create(p.audience, plays[p.playID]))
   statement.totalAmounts = totalAmounts(statement.performances)
   statement.totalCredits = totalCredits(statement.performances)
   return statement;
