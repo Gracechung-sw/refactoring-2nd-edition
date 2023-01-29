@@ -1,3 +1,56 @@
+class Performance {
+  #audience
+  #play
+  constructor(audience, play){
+    this.#audience = audience
+    this.#play = play
+  }
+
+  get credits(){
+    // 포인트를 적립한다.
+    let result = Math.max(this.#audience - 30, 0);
+    // 희극 관객 5명마다 추가 포인트를 제공한다.
+    if ('comedy' === this.#play.type) {
+      result += Math.floor(this.#audience / 5)
+    };
+    return result
+  }
+
+  get amount(){
+    let result = 0;
+    // Refactoring step3. 독자적인 기능을 하는 함수로 뺄 수 있는지 확인한다. 즉, 함수는 하나의 기능만 하고 이 기능을 가장 잘 나타내는 함수명을 가져야 한다. 
+    // Refactoring step4. 과도한 if/else나 switch는 '이건 다형성을 이용해 볼 수 있지 않을까?' 하는 생각을 해보는 것이 바람직하다. 
+    switch (this.#play.type) {
+      case 'tragedy': // 비극
+        result = 40000;
+        if (this.#audience > 30) {
+          result += 1000 * (this.#audience - 30);
+        }
+        break;
+      case 'comedy': // 희극
+        result = 30000;
+        if (this.#audience > 20) {
+          result += 10000 + 500 * (this.#audience - 20);
+        }
+        result += 300 * this.#audience;
+        break;
+      default:
+        throw new Error(`알 수 없는 장르: ${this.#play.type}`);
+    }
+    return result
+  }
+
+  get play() {
+    return this.#play
+  }
+
+  get audience() {
+    return this.#audience
+  }
+
+}
+
+
 export function statement(invoice, plays){
   // Refactoring point: statement라는 함수가 있는데, 어떤 흐름을 따라가면서 리턴값이 완성되는지, 한눈에 알 수 있도록 함수를 작성하고 싶다. 
   // 그래서 함수명도 그 흐름과 역할이 잘 드러나게 지어야 한다. 
@@ -15,57 +68,10 @@ function createStatement(invoice, plays){
   statement.customer = invoice.customer;
   // statement.performances = invoice.performances;
   // Refactoring 방법 1. (책에서 소개한 방법). performances를 for loop 돌면서, 우리가 performance에서 필요한 정보들을 담고 있는 새로운 객체를 생성시킨다. 
-  statement.performances = invoice.performances.map(p => enrichPerformance(p))
+  statement.performances = invoice.performances.map(p => new Performance(p.audience, plays[p.playID]))
   statement.totalAmounts = totalAmounts(statement.performances)
   statement.totalCredits = totalCredits(statement.performances)
   return statement;
-
-  function enrichPerformance(performance) {
-    // Refactoring point: 이렇게 변환함수를 사용하는 것 보다 class를 사용하는 것이 더 좋다. 
-    const result = {...performance}
-    result.play = playFor(performance)
-    result.amount = amountFor(result)
-    result.credits = volumeCreditsFor(result)
-    return result;
-  }
-
-  function playFor(performance){
-    return plays[performance.playID]
-  }
-
-  function amountFor(performance){
-    let result = 0;
-    // Refactoring step3. 독자적인 기능을 하는 함수로 뺄 수 있는지 확인한다. 즉, 함수는 하나의 기능만 하고 이 기능을 가장 잘 나타내는 함수명을 가져야 한다. 
-    // Refactoring step4. 과도한 if/else나 switch는 '이건 다형성을 이용해 볼 수 있지 않을까?' 하는 생각을 해보는 것이 바람직하다. 
-    switch (performance.play.type) {
-      case 'tragedy': // 비극
-        result = 40000;
-        if (performance.audience > 30) {
-          result += 1000 * (performance.audience - 30);
-        }
-        break;
-      case 'comedy': // 희극
-        result = 30000;
-        if (performance.audience > 20) {
-          result += 10000 + 500 * (performance.audience - 20);
-        }
-        result += 300 * performance.audience;
-        break;
-      default:
-        throw new Error(`알 수 없는 장르: ${performance.play.type}`);
-    }
-    return result
-  }
-
-  function volumeCreditsFor(performance){
-    // 포인트를 적립한다.
-    let result = Math.max(performance.audience - 30, 0);
-    // 희극 관객 5명마다 추가 포인트를 제공한다.
-    if ('comedy' === performance.play.type) {
-      result += Math.floor(performance.audience / 5)
-    };
-    return result
-  }
 
   function totalCredits(performances){
     // Refactoring step6. 반복문 쪼개기한 후 그 쪼갠 부분을 함수로 뺄 수 있는지 확인하기.
