@@ -1,4 +1,4 @@
-import { statement } from '../statement.js';
+import { statement, htmlStatement } from '../statement.js';
 
 describe('statement', () => {
   const playsJSON = {
@@ -37,7 +37,20 @@ describe('statement', () => {
 
     expect(statement(invoicesJSON[0], playsJSON)).toBe(expected);
   });
+
+  it('should print a html statement', () => {
+    const expected =
+      '<h1>청구 내역 (고객명: BigCo)\n</h1>' +
+      '  Hamlet: $650.00 (55석)\n' +
+      '  As You Like It: $580.00 (35석)\n' +
+      '  Othello: $500.00 (40석)\n' +
+      '총액: $1,730.00\n' +
+      '적립 포인트: 47점\n';
+
+    expect(htmlStatement(invoicesJSON[0], playsJSON)).toBe(expected);
+  });
 });
+
 
 {
   /* <h1>청구 내역 (고객명: BigCo)</h1>
