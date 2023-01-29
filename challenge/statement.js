@@ -6,40 +6,6 @@ class Performance {
     this.#play = play
   }
 
-  get credits(){
-    // 포인트를 적립한다.
-    let result = Math.max(this.#audience - 30, 0);
-    // 희극 관객 5명마다 추가 포인트를 제공한다.
-    if ('comedy' === this.#play.type) {
-      result += Math.floor(this.#audience / 5)
-    };
-    return result
-  }
-
-  get amount(){
-    let result = 0;
-    // Refactoring step3. 독자적인 기능을 하는 함수로 뺄 수 있는지 확인한다. 즉, 함수는 하나의 기능만 하고 이 기능을 가장 잘 나타내는 함수명을 가져야 한다. 
-    // Refactoring step4. 과도한 if/else나 switch는 '이건 다형성을 이용해 볼 수 있지 않을까?' 하는 생각을 해보는 것이 바람직하다. 
-    switch (this.#play.type) {
-      case 'tragedy': // 비극
-        result = 40000;
-        if (this.#audience > 30) {
-          result += 1000 * (this.#audience - 30);
-        }
-        break;
-      case 'comedy': // 희극
-        result = 30000;
-        if (this.#audience > 20) {
-          result += 10000 + 500 * (this.#audience - 20);
-        }
-        result += 300 * this.#audience;
-        break;
-      default:
-        throw new Error(`알 수 없는 장르: ${this.#play.type}`);
-    }
-    return result
-  }
-
   get play() {
     return this.#play
   }
@@ -50,6 +16,37 @@ class Performance {
 
 }
 
+class TragedyPerformance extends Performance {
+  get credits() {
+    let result = Math.max(this.audience - 30, 0);
+    return result
+  }
+
+  get amount() {
+    let result = 40000;
+    if (this.audience > 30) {
+      result += 1000 * (this.audience - 30);
+    }
+    return result
+  }
+}
+
+class ComedyPerformance extends Performance {
+  get credits() {
+    let result = Math.max(this.audience - 30, 0);
+    result += Math.floor(this.audience / 5)
+    return result
+  }
+
+  get amount() {
+    let result = 30000;
+    if (this.audience > 20) {
+      result += 10000 + 500 * (this.audience - 20);
+    }
+    result += 300 * this.audience;
+    return result
+  } 
+}
 
 export function statement(invoice, plays){
   // Refactoring point: statement라는 함수가 있는데, 어떤 흐름을 따라가면서 리턴값이 완성되는지, 한눈에 알 수 있도록 함수를 작성하고 싶다. 
