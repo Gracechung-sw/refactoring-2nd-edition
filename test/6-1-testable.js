@@ -1,4 +1,4 @@
-export function printOwing(invoice) {
+export function printOwing(invoice, console) {
   let outstanding = 0;
 
   console.log('***********************');
@@ -28,4 +28,4 @@ const invoice = {
   orders: [{ amount: 2 }, { amount: 5 }],
   customer: '엘리',
 };
-printOwing(invoice);
+printOwing(invoice, console);
