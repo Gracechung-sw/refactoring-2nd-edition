@@ -1,5 +1,18 @@
 import { printOwing } from "./6-1-testable";
 
+class Console {
+  #content = '';
+  constructor() {}
+
+  log(message) {
+    this.#content += `${message}\n`
+  }
+
+  get content() {
+    return this.#content;
+  }
+}
+
 describe('printOwing', () => {
   it('should print owing', () => {
     const invoice = {
@@ -13,7 +26,10 @@ describe('printOwing', () => {
     'amount: 7\n' +
     'due: 2/20/2022\n';
 
-    expected(printOwing(invoice).toBe(expected))
+
+    const console_mock = new Console()
+    printOwing(invoice, console_mock)
+    expect(console_mock.content).toBe(expected);
     // testable하지 않은 이유 1. 
     // 위와 같이 test를 작성하면 아래 에러가 발생한다. 
     // TypeError: Cannot read properties of undefined (reading 'toBe')
@@ -21,6 +37,7 @@ describe('printOwing', () => {
     // 다시말해 printOwing 함수는 console에 의존 관계가 매우 높다. 
     // 즉, test하기 좋은 코드는 아니다. 
     // 이를 test 하기 좋은 코드, tesable한 코드로 수정하는게 좋다. 
+    // -> 해결: console은 DI로 주입해주도록 기존 코드를 수정하고, test에서는 console mock을 위한 class를 생성한 후 그 class내에 저장된 값을 가지고 expected result와 비교한다.
   
     // testable하지 않은 이유 2.
     // const today = new Date();
